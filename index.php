@@ -32,6 +32,11 @@
         return sendOkResponse(('[{"alumnos":'.$alumnos.',"solicitudes":'.$solicitud.',"cartaaceptacion":'.$Cartaaceptacion.',"cartapresentacion":'.$cartapresentacion.',"expedienteFinal":'.$expedienteFinal.',"Reportesderesidencias":'.$Reportesderesidencias.',"Carreras":'.$Carreras.',"mensajes":'.$Mensajes.'}]'),$response);
     });
 
+    $app->post('/getMessages',function(Request $req,Response $res,$args){
+        $Mensajes = Mensajes::where('bActive','=','1')->get();
+        return sendOkResponse($Mensajes->toJson(),$res);
+    });
+
    /* $app->get('/pruebaPython/{camara}/{tipo}',function(Request $request, Response $response, $args){
         $alerta = new Alertas();
         $alerta->camara = $args['camara'];
