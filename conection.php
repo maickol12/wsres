@@ -5,7 +5,7 @@
 	$capsule->addConnection([
 		'driver' => 'mysql',
 		'host'   => 'localhost',
-		'database' => 'dbresidencias',
+		'database' => 'residenciasitsa',
 		'username' => 'root',
 		'password' => '',
 		'charset' => 'utf8',

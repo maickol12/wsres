@@ -29,7 +29,12 @@
         $Carreras               = Carreras::get();
         $Mensajes               = Mensajes::get();
 
-        return sendOkResponse(('[{"alumnos":'.$alumnos.',"solicitudes":'.$solicitud.',"cartaaceptacion":'.$Cartaaceptacion.',"cartapresentacion":'.$cartapresentacion.',"expedienteFinal":'.$expedienteFinal.',"Reportesderesidencias":'.$Reportesderesidencias.',"Carreras":'.$Carreras.',"mensajes":'.$Mensajes.'}]'),$response);
+        return sendOkResponse(('[+{"alumnos":'.$alumnos.',"solicitudes":'.$solicitud.',"cartaaceptacion":'.$Cartaaceptacion.',"cartapresentacion":'.$cartapresentacion.',"expedienteFinal":'.$expedienteFinal.',"Reportesderesidencias":'.$Reportesderesidencias.',"Carreras":'.$Carreras.',"mensajes":'.$Mensajes.'}]'),$response);
+    });
+
+    $app->post('/getCatalogs',function(Request $request,Response $res,$args){
+        $carreras = Carreras::where('bActivo','=','1')->get();
+        return sendOkResponse('{"carreras":'.$carreras.'}',$res);
     });
 
     $app->post('/getMessages',function(Request $req,Response $res,$args){
