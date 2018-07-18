@@ -29,7 +29,7 @@
         $Carreras               = Carreras::get();
         $Mensajes               = Mensajes::get();
 
-        return sendOkResponse(('[+{"alumnos":'.$alumnos.',"solicitudes":'.$solicitud.',"cartaaceptacion":'.$Cartaaceptacion.',"cartapresentacion":'.$cartapresentacion.',"expedienteFinal":'.$expedienteFinal.',"Reportesderesidencias":'.$Reportesderesidencias.',"Carreras":'.$Carreras.',"mensajes":'.$Mensajes.'}]'),$response);
+        return sendOkResponse(('[{"alumnos":'.$alumnos.',"solicitudes":'.$solicitud.',"cartaaceptacion":'.$Cartaaceptacion.',"cartapresentacion":'.$cartapresentacion.',"expedienteFinal":'.$expedienteFinal.',"Reportesderesidencias":'.$Reportesderesidencias.',"Carreras":'.$Carreras.',"mensajes":'.$Mensajes.'}]'),$response);
     });
 
     $app->post('/getCatalogs',function(Request $request,Response $res,$args){
@@ -41,7 +41,65 @@
         $Mensajes = Mensajes::where('bActive','=','1')->get();
         return sendOkResponse($Mensajes->toJson(),$res);
     });
+    $app->post('/registrarAlumno',function(Request $req,Response $res,$args){
+        $data = $req->getParsedBody();
+        $usuario = new Usuarios();
+        $usuario = Usuarios::where(
+                    'vUsuario','=',$data["vUsuario"])
+                    ->where('vContrasena','=',$data["vContrasena"])
+                    ->first();
+        if(!empty($usuario)){
+            sendOkResponse('{response:500,result:"El usuario ya existe en la base de datos",existe:1}',$res);
+        }
+        $usuario = new Usuarios();
+        $usuario->idTipoUsuario = 1;
+        $usuario->vUsuario      = $data["vUsuario"];
+        $usuario->vContrasena   = $data["vContrasena"];
+        $usuario->bActivo       = 1;
+        $respuesta = "[]";
+        $usuario->save();
+        if(count($usuario)>0){
+            $alumnos = new Alumnos();
 
+            $alumnos = Alumnos::where('idUsuario','=',$usuario->idUsuario)->first();
+
+            if(empty($alumnos)){
+                $alumnos = new Alumnos();
+            }
+
+
+            $alumnos->idCarrera             = $data["idCarrera"];
+            $alumnos->idUsuario             = $usuario->idUsuario;
+            $alumnos->vNumeroControl        = $data["vNumeroControl"];
+            $alumnos->vNombre               = $data["vNombre"];
+            $alumnos->vApellidoPaterno      = $data["vApellidoPaterno"];
+            $alumnos->vApellidoMaterno      = $data["vApellidoMaterno"];
+            $alumnos->vNumeroControl        = $data["vNumeroControl"];
+            $alumnos->dFechaNacimiento      = $data["dFechaNacimiento"];
+            $alumnos->bSexo                 = $data["bSexo"];
+            $alumnos->vSemestre             = $data["vSemestre"];
+            $alumnos->vCorreoInstitucional  = $data["vCorreoInstitucional"];
+            if($alumnos->save()){
+                sendOkResponse(Alumnos::where('idAlumno','=',$alumnos->idAlumno)->get()->toJson(),$res);
+            }else{
+                sendOkResponse('{response:500}',$res);
+            }
+        }else{
+             sendOkResponse('{response:500}',$res);
+        }
+        
+    });
+    /*
+    $this->post('/new',function(Request $request, Response $response, $args){
+            $data = $request->getParsedBody();
+            $Musico = new Musico();
+
+
+            //Nombre imagen
+            $nombreImagen = $data['nombre'].$data['apellido_paterno'].uniqid();    
+            $decoded = base64_decode($data['foto_perfil']);
+            file_put_contents('imgPerfil/'.$nombreImagen.'.jpg', $decoded);
+    */
    /* $app->get('/pruebaPython/{camara}/{tipo}',function(Request $request, Response $response, $args){
         $alerta = new Alertas();
         $alerta->camara = $args['camara'];
