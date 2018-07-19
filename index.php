@@ -41,51 +41,67 @@
         $Mensajes = Mensajes::where('bActive','=','1')->get();
         return sendOkResponse($Mensajes->toJson(),$res);
     });
+    $app->post('/login',function(Request $req,Response $res,$args){
+        $data = $req->getParsedBody();
+
+        $usuario = Usuarios::where('vUsuario','=',$data["vUsuario"])
+                  ->where("vContrasena",'=',$data["vContrasena"])->first();
+
+        if(empty($usuario)){
+            sendOkResponse('{"tabla1":[{"response":"500","result":"El usuario no existe en la base de datos"}],"tabla2":"Usuario no encontrado"}',$res);
+        }else{
+            sendOkResponse('{"tabla1":[{"response":"200"}],"tabla2":'.$usuario->alumno()->first()->toJson().'}',$res);
+        }
+    });
     $app->post('/registrarAlumno',function(Request $req,Response $res,$args){
         $data = $req->getParsedBody();
         $usuario = new Usuarios();
+
+
+
         $usuario = Usuarios::where(
                     'vUsuario','=',$data["vUsuario"])
                     ->where('vContrasena','=',$data["vContrasena"])
                     ->first();
         if(!empty($usuario)){
-            sendOkResponse('{response:500,result:"El usuario ya existe en la base de datos",existe:1}',$res);
-        }
-        $usuario = new Usuarios();
-        $usuario->idTipoUsuario = 1;
-        $usuario->vUsuario      = $data["vUsuario"];
-        $usuario->vContrasena   = $data["vContrasena"];
-        $usuario->bActivo       = 1;
-        $respuesta = "[]";
-        $usuario->save();
-        if(count($usuario)>0){
-            $alumnos = new Alumnos();
-
-            $alumnos = Alumnos::where('idUsuario','=',$usuario->idUsuario)->first();
-
-            if(empty($alumnos)){
-                $alumnos = new Alumnos();
-            }
-
-
-            $alumnos->idCarrera             = $data["idCarrera"];
-            $alumnos->idUsuario             = $usuario->idUsuario;
-            $alumnos->vNumeroControl        = $data["vNumeroControl"];
-            $alumnos->vNombre               = $data["vNombre"];
-            $alumnos->vApellidoPaterno      = $data["vApellidoPaterno"];
-            $alumnos->vApellidoMaterno      = $data["vApellidoMaterno"];
-            $alumnos->vNumeroControl        = $data["vNumeroControl"];
-            $alumnos->dFechaNacimiento      = $data["dFechaNacimiento"];
-            $alumnos->bSexo                 = $data["bSexo"];
-            $alumnos->vSemestre             = $data["vSemestre"];
-            $alumnos->vCorreoInstitucional  = $data["vCorreoInstitucional"];
-            if($alumnos->save()){
-                sendOkResponse(Alumnos::where('idAlumno','=',$alumnos->idAlumno)->get()->toJson(),$res);
-            }else{
-                sendOkResponse('{response:500}',$res);
-            }
+            sendOkResponse('{"tabla1":[{"response":"500","result":"El usuario ya existe en la base de datos","existe":"1"}]}',$res);
         }else{
-             sendOkResponse('{response:500}',$res);
+            $usuario = new Usuarios();
+            $usuario->idTipoUsuario = 1;
+            $usuario->vUsuario      = utf8_encode($data["vUsuario"]);
+            $usuario->vContrasena   = utf8_encode($data["vContrasena"]);
+            $usuario->bActivo       = 1;
+            $respuesta = "[]";
+            $usuario->save();
+            if(count($usuario)>0){
+                $alumnos = new Alumnos();
+
+                $alumnos = Alumnos::where('idUsuario','=',$usuario->idUsuario)->first();
+
+                if(empty($alumnos)){
+                    $alumnos = new Alumnos();
+                }
+
+
+                $alumnos->idCarrera             = $data["idCarrera"];
+                $alumnos->idUsuario             = $usuario->idUsuario;
+                $alumnos->vNumeroControl        = utf8_encode($data["vNumeroControl"]);
+                $alumnos->vNombre               = utf8_encode($data["vNombre"]);
+                $alumnos->vApellidoPaterno      = utf8_encode($data["vApellidoPaterno"]);
+                $alumnos->vApellidoMaterno      = utf8_encode($data["vApellidoMaterno"]);
+                $alumnos->vNumeroControl        = $data["vNumeroControl"];
+                $alumnos->dFechaNacimiento      = $data["dFechaNacimiento"];
+                $alumnos->bSexo                 = $data["bSexo"];
+                $alumnos->vSemestre             = $data["vSemestre"];
+                $alumnos->vCorreoInstitucional  = $data["vCorreoInstitucional"];
+                if($alumnos->save()){
+                    sendOkResponse('{"tabla1":[{"response":"200"}],"tabla2":'.Alumnos::where('idAlumno','=',$alumnos->idAlumno)->get()->toJson().'}',$res);
+                }else{
+                    sendOkResponse('{"tabla1":[{"response":"500","result":"No se pudo guardar el usuario en el servidor"}]}',$res);
+                }
+            }else{
+                 sendOkResponse('{"tabla1":[{"response":"500",result:"No se pudo guardar el usuario en el servidor"}]}',$res);
+            }
         }
         
     });
