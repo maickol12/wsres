@@ -6,15 +6,12 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
-    'Alertas' => $baseDir . '/models/Alertas.php',
     'Alumnos' => $baseDir . '/models/Alumnos.php',
     'Carreras' => $baseDir . '/models/Carreras.php',
-    'Cartaaceptacion' => $baseDir . '/models/Cartaaceptacion.php',
-    'Cartapresentacion' => $baseDir . '/models/Cartapresentacion.php',
-    'Dia' => $baseDir . '/models/Dia.php',
-    'Expedientefinal' => $baseDir . '/models/Expedientefinal.php',
+    'Giros' => $baseDir . '/models/Giros.php',
     'Mensajes' => $baseDir . '/models/Mensajes.php',
-    'Reportesderesidencias' => $baseDir . '/models/Reportesderesidencias.php',
-    'Solicitudderesidencias' => $baseDir . '/models/Solicitudderesidencias.php',
+    'Opciones' => $baseDir . '/models/Opciones.php',
+    'Periodos' => $baseDir . '/models/Periodos.php',
+    'Sectores' => $baseDir . '/models/Sectores.php',
     'Usuarios' => $baseDir . '/models/Usuarios.php',
 );

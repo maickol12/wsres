@@ -108,16 +108,13 @@ class ComposerStaticInitd806512c9d77db6fa1ef470d3788e6f2
     );
 
     public static $classMap = array (
-        'Alertas' => __DIR__ . '/../..' . '/models/Alertas.php',
         'Alumnos' => __DIR__ . '/../..' . '/models/Alumnos.php',
         'Carreras' => __DIR__ . '/../..' . '/models/Carreras.php',
-        'Cartaaceptacion' => __DIR__ . '/../..' . '/models/Cartaaceptacion.php',
-        'Cartapresentacion' => __DIR__ . '/../..' . '/models/Cartapresentacion.php',
-        'Dia' => __DIR__ . '/../..' . '/models/Dia.php',
-        'Expedientefinal' => __DIR__ . '/../..' . '/models/Expedientefinal.php',
+        'Giros' => __DIR__ . '/../..' . '/models/Giros.php',
         'Mensajes' => __DIR__ . '/../..' . '/models/Mensajes.php',
-        'Reportesderesidencias' => __DIR__ . '/../..' . '/models/Reportesderesidencias.php',
-        'Solicitudderesidencias' => __DIR__ . '/../..' . '/models/Solicitudderesidencias.php',
+        'Opciones' => __DIR__ . '/../..' . '/models/Opciones.php',
+        'Periodos' => __DIR__ . '/../..' . '/models/Periodos.php',
+        'Sectores' => __DIR__ . '/../..' . '/models/Sectores.php',
         'Usuarios' => __DIR__ . '/../..' . '/models/Usuarios.php',
     );
 

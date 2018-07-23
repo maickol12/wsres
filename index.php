@@ -34,7 +34,17 @@
 
     $app->post('/getCatalogs',function(Request $request,Response $res,$args){
         $carreras = Carreras::where('bActivo','=','1')->get();
-        return sendOkResponse('{"carreras":'.$carreras.'}',$res);
+        $giros    = Giros::where("bActivo","=","1")->get();
+        $opciones = Opciones::where("bActivo","=","1")->get();
+        $periodos = Periodos::where("bActivo","=","1")->get();
+        $sectores = Sectores::where("bActivo","=","1")->get();
+        return sendOkResponse('{
+                            "carreras":'.$carreras->toJson().',
+                            "giros":'.$giros->toJson().',
+                            "opciones":'.$opciones->toJson().',
+                            "periodos":'.$periodos->toJson().',
+                            "sectores":'.$sectores->toJson().'
+                            }',$res);
     });
 
     $app->post('/getMessages',function(Request $req,Response $res,$args){
