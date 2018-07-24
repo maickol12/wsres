@@ -7,6 +7,7 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'Alumnos' => $baseDir . '/models/Alumnos.php',
+    'BancoProyectos' => $baseDir . '/models/BancoProyectos.php',
     'Carreras' => $baseDir . '/models/Carreras.php',
     'Giros' => $baseDir . '/models/Giros.php',
     'Mensajes' => $baseDir . '/models/Mensajes.php',

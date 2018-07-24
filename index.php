@@ -38,12 +38,14 @@
         $opciones = Opciones::where("bActivo","=","1")->get();
         $periodos = Periodos::where("bActivo","=","1")->get();
         $sectores = Sectores::where("bActivo","=","1")->get();
+        $bancoPro = BancoProyectos::where("bActive","=","1")->get();
         return sendOkResponse('{
                             "carreras":'.$carreras->toJson().',
                             "giros":'.$giros->toJson().',
                             "opciones":'.$opciones->toJson().',
                             "periodos":'.$periodos->toJson().',
-                            "sectores":'.$sectores->toJson().'
+                            "sectores":'.$sectores->toJson().',
+                            "bancoProyectos":'.$bancoPro->toJson().'
                             }',$res);
     });
 
@@ -60,7 +62,7 @@
         if(empty($usuario)){
             sendOkResponse('{"tabla1":[{"response":"500","result":"El usuario no existe en la base de datos"}],"tabla2":"Usuario no encontrado"}',$res);
         }else{
-            sendOkResponse('{"tabla1":[{"response":"200"}],"tabla2":'.$usuario->alumno()->first()->toJson().'}',$res);
+            sendOkResponse('{"tabla1":[{"response":"200"}],"tabla2":['.$usuario->alumno()->first()->toJson().']}',$res);
         }
     });
     $app->post('/registrarAlumno',function(Request $req,Response $res,$args){
