@@ -115,6 +115,7 @@ class ComposerStaticInitd806512c9d77db6fa1ef470d3788e6f2
         'Mensajes' => __DIR__ . '/../..' . '/models/Mensajes.php',
         'Opciones' => __DIR__ . '/../..' . '/models/Opciones.php',
         'Periodos' => __DIR__ . '/../..' . '/models/Periodos.php',
+        'ProyectoSeleccionado' => __DIR__ . '/../..' . '/models/ProyectoSeleccionado.php',
         'Sectores' => __DIR__ . '/../..' . '/models/Sectores.php',
         'Usuarios' => __DIR__ . '/../..' . '/models/Usuarios.php',
     );
