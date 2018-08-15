@@ -20,16 +20,35 @@
     require 'utils.php';
 
     $app->get('/',function(Request $request, Response $response, $args){
-        $alumnos                = Alumnos::get();
+       /* $alumnos                = Alumnos::get();
         $solicitud              = Solicitudderesidencias::get();
         $Cartaaceptacion        = Cartaaceptacion::get();
         $cartapresentacion      = Cartapresentacion::get();
         $expedienteFinal        = Expedientefinal::get();
         $Reportesderesidencias  = Reportesderesidencias::get();
         $Carreras               = Carreras::get();
-        $Mensajes               = Mensajes::get();
+        $Mensajes               = Mensajes::get();*/
+     /*   return sendOkResponse(('[{"alumnos":'.$alumnos.',"solicitudes":'.$solicitud.',"cartaaceptacion":'.$Cartaaceptacion.',"cartapresentacion":'.$cartapresentacion.',"expedienteFinal":'.$expedienteFinal.',"Reportesderesidencias":'.$Reportesderesidencias.',"Carreras":'.$Carreras.',"mensajes":'.$Mensajes.'}]'),$response);*/
+     return sendOkResponse("si",$response);
+    });
 
-        return sendOkResponse(('[{"alumnos":'.$alumnos.',"solicitudes":'.$solicitud.',"cartaaceptacion":'.$Cartaaceptacion.',"cartapresentacion":'.$cartapresentacion.',"expedienteFinal":'.$expedienteFinal.',"Reportesderesidencias":'.$Reportesderesidencias.',"Carreras":'.$Carreras.',"mensajes":'.$Mensajes.'}]'),$response);
+    $app->post('/uploadFile',function(Request $req,Response $res){
+        $files = $req->getUploadedFiles();
+        if (empty($files['bill'])) {
+            throw new Exception('Expected a newfile');
+        }
+ 
+        $newfile = $files['bill'];
+      
+        if (!file_exists('imagenes')) {
+            mkdir('imagenes', 0777, true);
+        }
+
+        if ($newfile->getError() === UPLOAD_ERR_OK) {
+            $uploadFileName = $newfile->getClientFilename();
+            $newfile->moveTo('imagenes/' . $uploadFileName);
+         }
+
     });
 
     $app->post('/getCatalogs',function(Request $request,Response $res,$args){
