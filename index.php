@@ -44,6 +44,7 @@
             mkdir('imagenes', 0777, true);
         }
 
+        
         if ($newfile->getError() === UPLOAD_ERR_OK) {
             $uploadFileName = $newfile->getClientFilename();
             $newfile->moveTo('imagenes/' . $uploadFileName);
