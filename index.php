@@ -147,36 +147,40 @@
         $idGiro          = $data["idGiro"];
         $idEstado        = $data["idEstado"];
         $idSector        = $data["idSector"];
-        
-        $proyecto        = BancoProyectos::where('idbancoProyecto','=',$idBancoProyecto)->first();
+
+        $buscarProyecto = ProyectoSeleccionado::where('idAlumno','=',$idAlumno)->first();
+
+        if(empty($buscarProyecto)){
+            $proyecto        = BancoProyectos::where('idbancoProyecto','=',$idBancoProyecto)->first();
+            $nombreProyecto  = $proyecto["vNombreProyecto"];
+            $descripcion     = $proyecto["vDescripcion"];
+            $dependencia     = $proyecto["vDependencia"];
+
+            $proy            = new ProyectoSeleccionado();
+
+            $proy->idBancoProyecto = $idBancoProyecto;
+            $proy->idAlumno        = $idAlumno;
+            $proy->idPeriodo       = $idPeriodo;
+            $proy->idOpcion        = $idOpcion;
+            $proy->idGiro          = $idGiro;
+            $proy->idEstado        = 1;
+            $proy->idSector        = $idSector;
+            $proy->vNombreProyecto = $nombreProyecto;
+            $proy->vDescripcion    = $descripcion;
+            $proy->vDependencia    = $dependencia;
 
 
+            if($proy->save()){
+                sendOkResponse('{"tabla1":[{"response":"200"}],"tabla2":'.ProyectoSeleccionado::where('idProyectoSeleccionado','=',$proy->idProyectoSeleccionado)->get()->toJson().'}',$res);
+            }else{
+                 sendOkResponse('{"tabla1":[{"response":"500","result":"No se pudo realizar la solicitud del proyecto"}]}',$res);
 
-        $nombreProyecto  = $proyecto["vNombreProyecto"];
-        $descripcion     = $proyecto["vDescripcion"];
-        $dependencia     = $proyecto["vDependencia"];
-
-        $proy            = new ProyectoSeleccionado();
-
-        $proy->idBancoProyecto = $idBancoProyecto;
-        $proy->idAlumno        = $idAlumno;
-        $proy->idPeriodo       = $idPeriodo;
-        $proy->idOpcion        = $idOpcion;
-        $proy->idGiro          = $idGiro;
-        $proy->idEstado        = 1;
-        $proy->idSector        = $idSector;
-        $proy->vNombreProyecto = $nombreProyecto;
-        $proy->vDescripcion    = $descripcion;
-        $proy->vDependencia    = $dependencia;
-
-
-        if($proy->save()){
-            sendOkResponse('{"tabla1":[{"response":"200"}],"tabla2":'.ProyectoSeleccionado::where('idProyectoSeleccionado','=',$proy->idProyectoSeleccionado)->get()->toJson().'}',$res);
+            }
         }else{
-             sendOkResponse('{"tabla1":[{"response":"500",result:"No se pudo realizar la solicitud del proyecto"}]}',$res);
-
+            sendOkResponse('{"tabla1":[{"response":"500","result":"no puedes volver a seleccoinar un proyecto"}]}',$res);
         }
 
+    
 
     });
     /*
