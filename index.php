@@ -34,21 +34,58 @@
 
     $app->post('/uploadFile',function(Request $req,Response $res){
         $files = $req->getUploadedFiles();
+       
         if (empty($files['bill'])) {
             throw new Exception('Expected a newfile');
         }
  
         $newfile = $files['bill'];
       
-        if (!file_exists('imagenes')) {
-            mkdir('imagenes', 0777, true);
+        if (!file_exists('files')) {
+            mkdir('files', 0777, true);
         }
 
         
         if ($newfile->getError() === UPLOAD_ERR_OK) {
             $uploadFileName = $newfile->getClientFilename();
-            $newfile->moveTo('imagenes/' . $uploadFileName);
+            $newfile->moveTo('files/' . $uploadFileName);
          }
+
+    });
+    $app->post('/uploadDataFromFile',function(Request $req,Response $res){
+        $data = $req->getParsedBody();
+        $idProyectoSeleccionado = $data["idProyectoSeleccionado"];
+        $idTipoDocumento        = $data["idTipoDocumento"];
+        $idAlumno               = $data["idAlumno"];
+        $idEstado               = 3;
+        $nombre                 = $data["UUID"];
+        $ruta                   = "files/";
+        $bAceptadoAI            = 0;
+        $bAceptadoAE            = 0;
+
+        $documento = Documentos::where('idTipoDocumento','=',$idTipoDocumento)
+                  ->where("idAlumno",'=',$idAlumno)->first();
+
+        if(empty($documento)){
+            $documento = new Documentos();
+            $documento->idProyectoSeleccionado = $idProyectoSeleccionado;
+            $documento->idTipoDocumento        = $idTipoDocumento;
+            $documento->idEstado               = $idEstado;
+            $documento->vNombre                = $nombre;
+            $documento->vRuta                  = $ruta;
+            $documento->idAlumno               = $idAlumno;
+            $documento->bAceptadoAI            = $bAceptadoAI;
+            $documento->bAceptadoAE            = $bAceptadoAE;
+            if($documento->save()){
+                sendOkResponse('{"tabla1":[{"response":"200"}],"tabla2":['.$nombre.']}',$res);
+            }else{
+                 sendOkResponse('{"tabla1":[{"response":"500","result":"ocurrio un error al guardar"}]}',$res);
+            }
+        }else{
+            endOkResponse('{"tabla1":[{"response":"500","result":"Ya enviaste este documento"}]}',$res);
+        }
+
+        
 
     });
 
@@ -178,7 +215,7 @@
 
             }
         }else{
-            sendOkResponse('{"tabla1":[{"response":"500","result":"no puedes volver a seleccoinar un proyecto"}]}',$res);
+            sendOkResponse('{"tabla1":[{"response":"500","result":"no puedes volver a seleccoinar un proyecto"}],"table2":'.ProyectoSeleccionado::where('idProyectoSeleccionado','=',$buscarProyecto["idProyectoSeleccionado"]).'}',$res);
         }
 
     

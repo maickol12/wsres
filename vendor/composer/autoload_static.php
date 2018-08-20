@@ -111,6 +111,7 @@ class ComposerStaticInitd806512c9d77db6fa1ef470d3788e6f2
         'Alumnos' => __DIR__ . '/../..' . '/models/Alumnos.php',
         'BancoProyectos' => __DIR__ . '/../..' . '/models/BancoProyectos.php',
         'Carreras' => __DIR__ . '/../..' . '/models/Carreras.php',
+        'Documentos' => __DIR__ . '/../..' . '/models/Documentos.php',
         'Giros' => __DIR__ . '/../..' . '/models/Giros.php',
         'Mensajes' => __DIR__ . '/../..' . '/models/Mensajes.php',
         'Opciones' => __DIR__ . '/../..' . '/models/Opciones.php',
