@@ -82,10 +82,35 @@
                  sendOkResponse('{"tabla1":[{"response":"500","result":"ocurrio un error al guardar"}]}',$res);
             }
         }else{
-            endOkResponse('{"tabla1":[{"response":"500","result":"Ya enviaste este documento"}]}',$res);
+
+            if(file_exists('files/'.$nombre)){
+                $ProyectoSeleccionado = ProyectoSeleccionado::where('idProyectoSeleccionado','=',$idProyectoSeleccionado)->where('idAlumno','=',$idAlumno)->first();
+                
+                switch ($idTipoDocumento) {
+                    case '4':
+                        $ProyectoSeleccionado->bCartaPresentacion = 1;
+                        break;
+                    case '9':
+                        $ProyectoSeleccionado->bCartaAceptacion = 1;
+                        break;
+                    case '5':
+                        $ProyectoSeleccionado->bReporte1 = 1;
+                        break;
+                    case '6':
+                        $ProyectoSeleccionado->bReporte2 = 1;
+                        break;
+                }
+
+                $ProyectoSeleccionado->save();
+                
+            }
+
+            
+
+
+            sendOkResponse('{"tabla1":[{"response":"500","result":"Ya enviaste este documento"}],"tabla2":[{"UUID":'.$nombre.'}]}',$res);
         }
 
-        
 
     });
 
@@ -125,7 +150,6 @@
     $app->post('/registrarAlumno',function(Request $req,Response $res,$args){
         $data = $req->getParsedBody();
         $usuario = new Usuarios();
-
 
 
         $usuario = Usuarios::where(
