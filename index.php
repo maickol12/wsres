@@ -77,7 +77,7 @@
             $documento->bAceptadoAI            = $bAceptadoAI;
             $documento->bAceptadoAE            = $bAceptadoAE;
             if($documento->save()){
-                sendOkResponse('{"tabla1":[{"response":"200"}],"tabla2":['.$nombre.']}',$res);
+                sendOkResponse('{"tabla1":[{"response":"200"}],"tabla2":[{"UUID":'.$nombre.'}]}',$res);
             }else{
                  sendOkResponse('{"tabla1":[{"response":"500","result":"ocurrio un error al guardar"}]}',$res);
             }
