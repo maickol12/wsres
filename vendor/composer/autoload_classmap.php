@@ -10,6 +10,7 @@ return array(
     'BancoProyectos' => $baseDir . '/models/BancoProyectos.php',
     'Carreras' => $baseDir . '/models/Carreras.php',
     'Documentos' => $baseDir . '/models/Documentos.php',
+    'Estados' => $baseDir . '/models/Estados.php',
     'Giros' => $baseDir . '/models/Giros.php',
     'Mensajes' => $baseDir . '/models/Mensajes.php',
     'Opciones' => $baseDir . '/models/Opciones.php',

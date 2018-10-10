@@ -34,6 +34,9 @@
 
     $app->post('/uploadFile',function(Request $req,Response $res){
         $files = $req->getUploadedFiles();
+        //$files = $req->getParsedBody();
+        
+       // print_r($files);
        
         if (empty($files['bill'])) {
             throw new Exception('Expected a newfile');
@@ -52,6 +55,7 @@
          }
 
     });
+
     $app->post('/uploadDataFromFile',function(Request $req,Response $res){
         $data = $req->getParsedBody();
         $idProyectoSeleccionado = $data["idProyectoSeleccionado"];
@@ -84,7 +88,8 @@
         }else{
 
             if(file_exists('files/'.$nombre)){
-                $ProyectoSeleccionado = ProyectoSeleccionado::where('idProyectoSeleccionado','=',$idProyectoSeleccionado)->where('idAlumno','=',$idAlumno)->first();
+                $ProyectoSeleccionado = ProyectoSeleccionado::where('idProyectoSeleccionado','=',$idProyectoSeleccionado)
+                                        ->where('idAlumno','=',$idAlumno)->first();
                 
                 switch ($idTipoDocumento) {
                     case '4':
@@ -121,13 +126,15 @@
         $periodos = Periodos::where("bActivo","=","1")->get();
         $sectores = Sectores::where("bActivo","=","1")->get();
         $bancoPro = BancoProyectos::where("bActive","=","1")->get();
+        $estados = Estados::where("bActivo","=","1")->get();
         return sendOkResponse('{
                             "carreras":'.$carreras->toJson().',
                             "giros":'.$giros->toJson().',
                             "opciones":'.$opciones->toJson().',
                             "periodos":'.$periodos->toJson().',
                             "sectores":'.$sectores->toJson().',
-                            "bancoProyectos":'.$bancoPro->toJson().'
+                            "bancoProyectos":'.$bancoPro->toJson().',
+                            "estados":'.$estados->toJson().'
                             }',$res);
     });
 
@@ -135,6 +142,7 @@
         $Mensajes = Mensajes::where('bActive','=','1')->get();
         return sendOkResponse($Mensajes->toJson(),$res);
     });
+    
     $app->post('/login',function(Request $req,Response $res,$args){
         $data = $req->getParsedBody();
 
@@ -144,7 +152,15 @@
         if(empty($usuario)){
             sendOkResponse('{"tabla1":[{"response":"500","result":"El usuario no existe en la base de datos"}],"tabla2":"Usuario no encontrado"}',$res);
         }else{
-            sendOkResponse('{"tabla1":[{"response":"200"}],"tabla2":['.$usuario->alumno()->first()->toJson().']}',$res);
+             $idAlumno = $usuario->alumno()->first()->idAlumno;
+             $json = '{
+                    "tabla1":[{"response":"200"}],
+                    "tabla2":'.Alumnos::where("idAlumno",$idAlumno)->get()->toJson().',
+                    "tabla3":'.Documentos::where("idAlumno",$idAlumno)->get()->toJson().',
+                    "tabla4":'.ProyectoSeleccionado::where("idAlumno",$idAlumno)->get()->toJson().'
+                 }';
+
+            sendOkResponse(','.$json,$res);
         }
     });
     $app->post('/registrarAlumno',function(Request $req,Response $res,$args){
@@ -239,11 +255,22 @@
 
             }
         }else{
-            sendOkResponse('{"tabla1":[{"response":"500","result":"no puedes volver a seleccoinar un proyecto"}],"table2":'.ProyectoSeleccionado::where('idProyectoSeleccionado','=',$buscarProyecto["idProyectoSeleccionado"]).'}',$res);
+            sendOkResponse('{"tabla1":[{"response":"500","result":"no puedes volver a seleccoinar un proyecto"}],"table2":'.ProyectoSeleccionado::where('idProyectoSeleccionado','=',$buscarProyecto["idProyectoSeleccionado"])->get()->toJson().'}',$res);
         }
+    });
 
+    $app->post('/obtenerDatosAlumno',function(Request $req,Response $res,$args){
+        $data = $req->getParsedBody();
+        $idAlumno = $data["idAlumno"];
+
+        $json = '{
+                    "tabla1":'.Alumnos::where("idAlumno",$idAlumno)->get()->toJson().',
+                    "tabla2":'.Documentos::where("idAlumno",$idAlumno)->get()->toJson().',
+                    "tabla3":'.ProyectoSeleccionado::where("idAlumno",$idAlumno)->get()->toJson().'
+                 }';
+
+        sendOkResponse($json,$res);
     
-
     });
     /*
     $this->post('/new',function(Request $request, Response $response, $args){
