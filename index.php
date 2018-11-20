@@ -259,9 +259,9 @@
             $proy->idGiro          = $idGiro;
             $proy->idEstado        = 1;
             $proy->idSector        = $idSector;
-            $proy->vNombreProyecto = $nombreProyecto;
+            /*$proy->vNombreProyecto = $nombreProyecto;
             $proy->vDescripcion    = $descripcion;
-            $proy->vDependencia    = $dependencia;
+            $proy->vDependencia    = $dependencia;*/
 
 
             if($proy->save()){
