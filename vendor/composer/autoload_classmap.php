@@ -13,6 +13,7 @@ return array(
     'Estados' => $baseDir . '/models/Estados.php',
     'Giros' => $baseDir . '/models/Giros.php',
     'Mensajes' => $baseDir . '/models/Mensajes.php',
+    'Mensajesporalumno' => $baseDir . '/models/Mensajesporalumno.php',
     'Opciones' => $baseDir . '/models/Opciones.php',
     'Periodos' => $baseDir . '/models/Periodos.php',
     'ProyectoSeleccionado' => $baseDir . '/models/ProyectoSeleccionado.php',

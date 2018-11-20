@@ -1,4 +1,4 @@
-<?php 
+<?php
 
     require 'vendor/autoload.php';
     require 'conection.php';
@@ -35,20 +35,20 @@
     $app->post('/uploadFile',function(Request $req,Response $res){
         $files = $req->getUploadedFiles();
         //$files = $req->getParsedBody();
-        
+
        // print_r($files);
-       
+
         if (empty($files['bill'])) {
             throw new Exception('Expected a newfile');
         }
- 
+
         $newfile = $files['bill'];
-      
+
         if (!file_exists('files')) {
             mkdir('files', 0777, true);
         }
 
-        
+
         if ($newfile->getError() === UPLOAD_ERR_OK) {
             $uploadFileName = $newfile->getClientFilename();
             $newfile->moveTo('files/' . $uploadFileName);
@@ -90,7 +90,7 @@
             if(file_exists('files/'.$nombre)){
                 $ProyectoSeleccionado = ProyectoSeleccionado::where('idProyectoSeleccionado','=',$idProyectoSeleccionado)
                                         ->where('idAlumno','=',$idAlumno)->first();
-                
+
                 switch ($idTipoDocumento) {
                     case '4':
                         $ProyectoSeleccionado->bCartaPresentacion = 1;
@@ -107,10 +107,10 @@
                 }
 
                 $ProyectoSeleccionado->save();
-                
+
             }
 
-            
+
 
 
             sendOkResponse('{"tabla1":[{"response":"500","result":"Ya enviaste este documento"}],"tabla2":[{"UUID":'.$nombre.'}]}',$res);
@@ -142,7 +142,16 @@
         $Mensajes = Mensajes::where('bActive','=','1')->get();
         return sendOkResponse($Mensajes->toJson(),$res);
     });
-    
+
+    $app->post("/getMessageByAlumno",function(Request $req,Response $res){
+      $data = $req->getParsedBody();
+
+      $idAlumno = $data["idAlumno"];
+
+      $MensajesPorAlumno = Mensajesporalumno::where("bActive","=","1")->where("idAlumno","=",$idAlumno)->get(["vMensaje as vDescripcion","vTitulo"]);
+      return sendOkResponse($MensajesPorAlumno->toJson(),$res);
+    });
+
     $app->post('/login',function(Request $req,Response $res,$args){
         $data = $req->getParsedBody();
 
@@ -153,14 +162,21 @@
             sendOkResponse('{"tabla1":[{"response":"500","result":"El usuario no existe en la base de datos"}],"tabla2":"Usuario no encontrado"}',$res);
         }else{
              $idAlumno = $usuario->alumno()->first()->idAlumno;
-             $json = '{
+             /*$json = '{
                     "tabla1":[{"response":"200"}],
                     "tabla2":'.Alumnos::where("idAlumno",$idAlumno)->get()->toJson().',
                     "tabla3":'.Documentos::where("idAlumno",$idAlumno)->get()->toJson().',
                     "tabla4":'.ProyectoSeleccionado::where("idAlumno",$idAlumno)->get()->toJson().'
-                 }';
+                 }';*/
 
-            sendOkResponse(','.$json,$res);
+            $json .= "{";
+            $json .= "\"tabla1\":[{\"response\":\"200\"}],";
+            $json .= "\"tabla2\":".Alumnos::where("idAlumno",$idAlumno)->get()->toJson().",";
+            $json .= "\"tabla3\":".Documentos::where("idAlumno",$idAlumno)->get()->toJson().",";
+            $json .= "\"tabla4\":".ProyectoSeleccionado::where("idAlumno",$idAlumno)->get()->toJson()."";
+            $json .= "}";
+
+            sendOkResponse($json,$res);
         }
     });
     $app->post('/registrarAlumno',function(Request $req,Response $res,$args){
@@ -212,9 +228,9 @@
                  sendOkResponse('{"tabla1":[{"response":"500",result:"No se pudo guardar el usuario en el servidor"}]}',$res);
             }
         }
-        
+
     });
-  
+
     $app->post('/escogerProyecto',function(Request $req,Response $res,$args){
         $data = $req->getParsedBody();
 
@@ -270,7 +286,7 @@
                  }';
 
         sendOkResponse($json,$res);
-    
+
     });
     /*
     $this->post('/new',function(Request $request, Response $response, $args){
@@ -279,7 +295,7 @@
 
 
             //Nombre imagen
-            $nombreImagen = $data['nombre'].$data['apellido_paterno'].uniqid();    
+            $nombreImagen = $data['nombre'].$data['apellido_paterno'].uniqid();
             $decoded = base64_decode($data['foto_perfil']);
             file_put_contents('imgPerfil/'.$nombreImagen.'.jpg', $decoded);
     */
@@ -299,7 +315,7 @@
 
 
     $app->group('/musico',function(){
- 
+
         $this->get('/all',function(Request $request, Response $response, $args){
             $musico = Musico::orderByRaw('RAND()')->get();
             return sendOkResponse($musico->toJson(),$response);
@@ -310,20 +326,20 @@
             return sendOkResponse($musico->toJson(),$response);
         });
 
-      
+
         $this->get('/{id}',function(Request $request, Response $response, $args){
             $musico = Musico::where('id','=', $args['id'])->with('instrumentos','excepciones','trajes','horarios')->get();
             return sendOkResponse($musico->toJson(), $response);
         });
 
- 
+
         $this->post('/new',function(Request $request, Response $response, $args){
             $data = $request->getParsedBody();
             $Musico = new Musico();
 
 
             //Nombre imagen
-            $nombreImagen = $data['nombre'].$data['apellido_paterno'].uniqid();    
+            $nombreImagen = $data['nombre'].$data['apellido_paterno'].uniqid();
             $decoded = base64_decode($data['foto_perfil']);
             file_put_contents('imgPerfil/'.$nombreImagen.'.jpg', $decoded);
 
@@ -347,7 +363,7 @@
 
             $Ultimo = Musico::all();
 
-     
+
             return sendOkResponse($Ultimo->last()->toJson(),$response);
         });
     });
@@ -359,7 +375,7 @@
             return sendOkResponse($paises->toJson(),$response);
         });
 
-        
+
         $this->get('/estados/{pais}',function(Request $request, Response $response, $args){
             $estados = Estado::where('c_pais_id','=', $args['pais'])->get();
             return sendOkResponse($estados->toJson(),$response);
@@ -369,7 +385,7 @@
             return sendOkResponse($ciudades->toJson(),$response);
         });
     });*/
-    
+
     $app->run();
 
 ?>
