@@ -1,6 +1,6 @@
 <?php
 	class Periodos extends Illuminate\Database\Eloquent\Model {
-		protected $table = 'Periodos';
+		protected $table = 'periodos';
 		protected $primaryKey = 'idPeriodo';
 		public $timestamps = false;
 	}
